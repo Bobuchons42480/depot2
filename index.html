@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réservation de Studio</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,12 +58,55 @@
     </div>
 
     <script>
+        // 🔥 Configuration Firebase (remplace avec tes infos)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBzFW6Fyjhfk5pV2dcqOy76vlZXmg8MhsQ",
+
+  authDomain: "monstudio-7ccbc.firebaseapp.com",
+
+  projectId: "monstudio-7ccbc",
+
+  storageBucket: "monstudio-7ccbc.firebasestorage.app",
+
+  messagingSenderId: "784792196835",
+
+  appId: "1:784792196835:web:ec45e05019fa7a9aab57d6"
+        };
+
+        // 🔥 Initialisation Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // 🎯 Gestion du formulaire
         document.getElementById("booking-form").addEventListener("submit", function(event) {
             event.preventDefault();
 
             let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
             let startDate = document.getElementById("start-date").value;
             let endDate = document.getElementById("end-date").value;
 
             if (new Date(startDate) >= new Date(endDate)) {
-                document.get
+                document.getElementById("message").innerText = "Erreur : La date de fin doit être après la date de début.";
+                document.getElementById("message").style.color = "red";
+            } else {
+                // 🔥 Enregistrer dans Firebase
+                let reservationRef = database.ref("reservations").push();
+                reservationRef.set({
+                    name: name,
+                    email: email,
+                    startDate: startDate,
+                    endDate: endDate
+                });
+
+                document.getElementById("message").innerText = `Merci ${name}, votre réservation a été enregistrée !`;
+                document.getElementById("message").style.color = "green";
+
+                // 🔄 Réinitialiser le formulaire
+                document.getElementById("booking-form").reset();
+            }
+        });
+    </script>
+
+</body>
+</html>
